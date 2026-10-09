@@ -27,13 +27,15 @@ impl BountyForgeContract {
 mod test {
     use super::*;
     use soroban_sdk::Env;
+    use soroban_sdk::testutils::Address as _;
 
     #[test]
     fn records_value() {
         let env = Env::default();
+        env.mock_all_auths();
         let id = env.register(BountyForgeContract, ());
         let client = BountyForgeContractClient::new(&env, &id);
-        let actor = env.accounts().generate();
+        let actor = Address::generate(&env);
         client.initialize(&actor);
         client.record(&actor, &42);
         assert_eq!(client.read(), 42);
